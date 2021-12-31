@@ -2,6 +2,7 @@ module seven_segment_controller(
     input display_clk,
     input [2:0] volume,
     input [2:0] octave,
+    input [2:0] loop_width,
     output reg [3:0] DIGIT,
     output reg [6:0] DISPLAY
 );
@@ -21,7 +22,7 @@ module seven_segment_controller(
                 DIGIT=4'b0111;
             end
             4'b0111: begin
-                value=8;
+                value=loop_width;
                 DIGIT=4'b1110;
             end
             default: begin

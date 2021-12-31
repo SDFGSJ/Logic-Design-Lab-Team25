@@ -16,6 +16,20 @@ module top(
     output [6:0] DISPLAY,
     output [3:0] DIGIT
 );
+    wire [511:0] key_down;
+    wire [8:0] last_change;
+    wire key_valid;
+    KeyboardDecoder keydecode1(
+        .key_down(key_down),
+        .last_change(last_change),
+        .key_valid(key_valid),
+        .PS2_DATA(PS2_DATA),
+        .PS2_CLK(PS2_CLK),
+        .rst(rst),
+        .clk(clk)
+    );
+
+
     // Internal Signal
     wire [15:0] audio_in_left, audio_in_right;
     wire [11:0] ibeatNum;               // Beat counter
@@ -58,13 +72,16 @@ module top(
     );
 
 
-    //[in] clk, rst, play_pause, loop_debounced
+    //[in] clk, rst, play_pause, loop_debounced, loop_width
     //[out] beat number
+    //wire [2:0] loop_width;  //3 bits
+    reg [2:0] loop_width, loop_width_next;
     player_control #(.LEN(64)) playerCtrl(
         .clk(play_clk),
-        .reset(rst),
+        .rst(rst),
         .play_pause(play_pause),
         .loop_de(loop_debounced),
+        .loop_width(loop_width),
         .ibeat(ibeatNum)
     );
 
@@ -84,13 +101,14 @@ module top(
     );
 
 
-    //[in] clk, rst, PS2_CLK, PS2_DATA
+    //[in] clk, rst, key_down, last_change, key_valid
     //[out] volume, octave
     volume_octave_controller volOctCtrl(
         .clk(clk),
         .rst(rst),
-        .PS2_CLK(PS2_CLK),
-        .PS2_DATA(PS2_DATA),
+        .key_down(key_down),
+        .last_change(last_change),
+        .key_valid(key_valid),
         .volume(volume),
         .octave(octave)
     );
@@ -120,12 +138,13 @@ module top(
         end
     end
 
-    //[in] display_clk, volume, octave
+    //[in] display_clk, volume, octave, loop_width
     //[out] DIGIT, DISPLAY
     seven_segment_controller sevenSegCtrl(
         .display_clk(display_clk),
         .volume(volume),
         .octave(octave),
+        .loop_width(loop_width),
         .DIGIT(DIGIT),
         .DISPLAY(DISPLAY)
     );
@@ -156,4 +175,49 @@ module top(
         .audio_sck(audio_sck),              // serial clock
         .audio_sdin(audio_sdin)             // serial audio data input
     );
+
+    parameter [8:0] KEY_CODES[0:4] = {
+        9'b0_0111_0010,	//2 => 72
+		9'b0_0111_1010,	//3 => 7A
+		9'b0_0110_1011,	//4 => 6B
+		9'b0_0111_0011,	//5 => 73
+		9'b0_0111_0100	//6 => 74
+    };
+    reg [2:0] key_num;
+	always @ (*) begin
+        case(last_change)
+            KEY_CODES[0] : key_num = 3'b000;   //2
+            KEY_CODES[1] : key_num = 3'b001;   //3
+            KEY_CODES[2] : key_num = 3'b010;   //4
+            KEY_CODES[3] : key_num = 3'b011;   //5
+            KEY_CODES[4] : key_num = 3'b100;   //6
+            default : key_num = 3'b111;
+        endcase
+    end
+    
+    always @(posedge clk, posedge rst) begin
+		if (rst) begin
+			loop_width <= 4;
+		end else begin
+			loop_width <= loop_width_next;
+		end
+	end
+    always @(*) begin
+		loop_width_next = loop_width;
+		if(key_valid && key_down[last_change]) begin
+            if(key_num!=3'b111) begin
+                if(key_num == 3'b000) begin	//2
+					loop_width_next = 2;
+				end else if (key_num == 3'b001) begin	//3
+					loop_width_next = 3;
+				end else if (key_num == 3'b010) begin	//4
+					loop_width_next = 4;
+				end else if (key_num == 3'b011) begin	//5
+					loop_width_next = 5;
+				end else if (key_num == 3'b100) begin	//6
+					loop_width_next = 6;
+				end
+			end
+		end
+	end
 endmodule
