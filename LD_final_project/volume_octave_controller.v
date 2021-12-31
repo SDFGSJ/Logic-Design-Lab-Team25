@@ -14,6 +14,8 @@ module volume_octave_controller(
         9'b0_0001_1101, //W:1D
         9'b0_0001_1011 //S:1B
     };
+
+
     reg [2:0] key_num;
     always @ (*) begin
         case(last_change)
@@ -25,17 +27,18 @@ module volume_octave_controller(
         endcase
     end
 
-    reg [2:0] volume_next, octave_next;
 
+    reg [2:0] volume_next, octave_next;
     always @(posedge clk, posedge rst) begin
         if(rst) begin
-            volume<=3'd3;
-            octave<=3'd2;
+            volume <= 3'd3;
+            octave <= 3'd2;
         end else begin
-            volume<=volume_next;
-            octave<=octave_next;
+            volume <= volume_next;
+            octave <= octave_next;
         end
     end
+
 
     always @(*) begin
         volume_next = volume;

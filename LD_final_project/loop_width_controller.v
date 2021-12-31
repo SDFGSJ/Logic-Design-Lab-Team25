@@ -40,7 +40,7 @@ module loop_width_controller(
 		loop_width_next = loop_width;
 		if(key_valid && key_down[last_change]) begin
             if(key_num != 3'b111) begin
-                if(key_num == 3'b000) begin	//2
+                if (key_num == 3'b000) begin	//2
 					loop_width_next = 2;
 				end else if (key_num == 3'b001) begin	//3
 					loop_width_next = 3;

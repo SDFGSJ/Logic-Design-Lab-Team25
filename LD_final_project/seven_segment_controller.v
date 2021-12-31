@@ -10,24 +10,24 @@ module seven_segment_controller(
     always @(posedge display_clk) begin
         case(DIGIT)
             4'b1110: begin
-                value=8;
-                DIGIT=4'b1101;
+                value = 8;
+                DIGIT = 4'b1101;
             end
             4'b1101: begin
-                value=volume;
-                DIGIT=4'b1011;
+                value = volume;
+                DIGIT = 4'b1011;
             end
             4'b1011: begin
-                value=octave;
-                DIGIT=4'b0111;
+                value = octave;
+                DIGIT = 4'b0111;
             end
             4'b0111: begin
-                value=loop_width;
-                DIGIT=4'b1110;
+                value = loop_width;
+                DIGIT = 4'b1110;
             end
             default: begin
-                value=8;
-                DIGIT=4'b1110;
+                value = 8;
+                DIGIT = 4'b1110;
             end
         endcase
     end
@@ -35,16 +35,16 @@ module seven_segment_controller(
     always @(*) begin
         //4'd0~7 means number 0~7
         case(value) //0 means on,1 means off(GFEDCBA)
-            4'd0: DISPLAY=7'b100_0000;
-            4'd1: DISPLAY=7'b111_1001;
-            4'd2: DISPLAY=7'b010_0100;
-            4'd3: DISPLAY=7'b011_0000;
-            4'd4: DISPLAY=7'b001_1001;
-            4'd5: DISPLAY=7'b001_0010;
-            4'd6: DISPLAY=7'b000_0010;
-            4'd7: DISPLAY=7'b111_1000;
-            4'd8: DISPLAY=7'b011_1111;   //-
-            default: DISPLAY=7'b111_1111;
+            4'd0: DISPLAY = 7'b100_0000;
+            4'd1: DISPLAY = 7'b111_1001;
+            4'd2: DISPLAY = 7'b010_0100;
+            4'd3: DISPLAY = 7'b011_0000;
+            4'd4: DISPLAY = 7'b001_1001;
+            4'd5: DISPLAY = 7'b001_0010;
+            4'd6: DISPLAY = 7'b000_0010;
+            4'd7: DISPLAY = 7'b111_1000;
+            4'd8: DISPLAY = 7'b011_1111;   //-
+            default: DISPLAY = 7'b111_1111;
         endcase
     end
 endmodule
