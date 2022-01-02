@@ -128,6 +128,7 @@ module music_example (
                 end
                 led_next = 1;
             end else begin
+                led_next = 65535;
                 toneR = `sil;
             end
         end

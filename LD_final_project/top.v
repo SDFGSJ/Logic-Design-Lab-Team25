@@ -35,7 +35,7 @@ module top(
     debounce loop_de(.clk(clk), .pb(loop), .pb_debounced(loop_debounced));
     onepulse play_or_pause_op(.clk(clk), .signal(play_debounced), .op(play_1p));
     
-    
+
     wire [511:0] key_down;
     wire [8:0] last_change;
     wire key_valid;
@@ -48,6 +48,34 @@ module top(
         .rst(rst),
         .clk(clk)
     );
+
+    parameter [8:0] KEY_R = 9'b0_0010_1101; //R:2D
+    reg reverse, reverse_next;
+    reg key_num;
+    always @(posedge clk, posedge rst) begin
+        if(rst) begin
+            reverse <= 0;
+        end else begin
+            reverse <= reverse_next;
+        end
+    end
+    always @(*) begin
+        reverse_next = reverse;
+        if(key_valid && key_down[last_change]) begin
+            if(key_num!=1) begin
+                if(key_num==0) begin
+                    reverse_next = ~reverse;
+                end
+            end
+        end
+    end
+    always @(*) begin
+        case(last_change)
+            KEY_R: key_num=0;
+            default: key_num=1;
+        endcase
+    end
+    
 
 
     //[in] clk, rst, play_1p
@@ -92,6 +120,7 @@ module top(
         .play_pause(play_pause),
         .loop_de(loop_debounced),
         .loop_width(loop_width),
+        .reverse(reverse),
         .ibeat(ibeatNum)
     );
 
