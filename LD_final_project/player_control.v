@@ -5,11 +5,14 @@ module player_control (
 	input loop_de,
 	input [2:0] loop_width,
 	input reverse,
-	output reg [11:0] ibeat
+	output reg [11:0] ibeat,
+	output [11:0] bound_debug
 );
 	parameter LEN = 4095;
     reg [11:0] next_ibeat;
 	reg [11:0] bound, bound_next;
+
+	assign bound_debug = bound;	//debug purpose only
 
 	always @(posedge clk, posedge rst) begin
 		if (rst) begin
@@ -31,25 +34,24 @@ module player_control (
 	always update 'bound' when not pressing loop button
 	once the loop button is pressed, we can directly use this information
 	*/
-	//bug:in reverse,when led reach to the leftmost,pressing looping button doenst work(only the leftmost led),others works well
     always @* begin
 		next_ibeat = ibeat;
 		bound_next = bound;
 		if(play_pause) begin	//play
 			if(!loop_de) begin
 				if(reverse) begin
-					next_ibeat = (ibeat - 1 > 0) ? (ibeat - 1) : LEN-1;
+					next_ibeat = (ibeat > 0) ? (ibeat - 1) : LEN-1;
 					
 					bound_next = (ibeat - 1 > 0) ? (ibeat - (ibeat%4)) : 0;
 				end else begin
 					next_ibeat = (ibeat + 1 < LEN) ? (ibeat + 1) : 0;
-					//check the boundary case, (ibeat + 3 - (ibeat%4)) is the upper bound of the current ibeat
+					//check the boundary case, (ibeat + 3 - (ibeat%4)) is the upper bound of the current ibeat range
 					bound_next = (ibeat + 1 < LEN) ? (ibeat + 3 - (ibeat%4)) : 0;
 				end
 			end else begin
 				if(reverse) begin
 					if(ibeat > 63 - 4*(loop_width-1) || ibeat != bound) begin
-						next_ibeat = (ibeat - 1 > 0) ? (ibeat - 1) : LEN-1;
+						next_ibeat = (ibeat > 0) ? (ibeat - 1) : LEN-1;
 					end else begin
 						next_ibeat = ibeat + (4*loop_width-1);
 					end

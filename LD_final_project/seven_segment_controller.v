@@ -3,6 +3,8 @@ module seven_segment_controller(
     input [2:0] volume,
     input [2:0] octave,
     input [2:0] loop_width,
+    input [11:0] ibeat,
+    input [11:0] bound,
     output reg [3:0] DIGIT,
     output reg [6:0] DISPLAY
 );
@@ -10,23 +12,27 @@ module seven_segment_controller(
     always @(posedge display_clk) begin
         case(DIGIT)
             4'b1110: begin
-                value = 8;
+                //value = 10;
+                value = bound/10;
                 DIGIT = 4'b1101;
             end
             4'b1101: begin
-                value = volume;
+                //value = volume;
+                value = ibeat%10;
                 DIGIT = 4'b1011;
             end
             4'b1011: begin
-                value = octave;
+                //value = octave;
+                value = ibeat/10;
                 DIGIT = 4'b0111;
             end
             4'b0111: begin
-                value = loop_width;
+                //value = loop_width;
+                value = bound%10;
                 DIGIT = 4'b1110;
             end
             default: begin
-                value = 8;
+                value = 10;
                 DIGIT = 4'b1110;
             end
         endcase
@@ -43,7 +49,9 @@ module seven_segment_controller(
             4'd5: DISPLAY = 7'b001_0010;
             4'd6: DISPLAY = 7'b000_0010;
             4'd7: DISPLAY = 7'b111_1000;
-            4'd8: DISPLAY = 7'b011_1111;   //-
+            4'd8: DISPLAY = 7'b000_0000;
+            4'd9: DISPLAY = 7'b001_0000;
+            4'd10: DISPLAY = 7'b011_1111;   //-
             default: DISPLAY = 7'b111_1111;
         endcase
     end
