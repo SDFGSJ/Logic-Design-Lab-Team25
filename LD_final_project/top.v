@@ -18,7 +18,7 @@ module top(
 );
     // Internal Signal
     wire [15:0] audio_in_left, audio_in_right;
-    wire [11:0] ibeatNum, bound_debug;               // Beat counter
+    wire [11:0] ibeatNum;               // Beat counter
     wire [31:0] freqL, freqR;           // Raw frequency, produced by music module
     reg [21:0] freq_outL, freq_outR;    // Processed frequency, adapted to the clock rate of Basys3
 
@@ -121,8 +121,7 @@ module top(
         .loop_de(loop_debounced),
         .loop_width(loop_width),
         .reverse(reverse),
-        .ibeat(ibeatNum),
-        .bound_debug(bound_debug)   //debug purpose only
+        .ibeat(ibeatNum)
     );
 
 
@@ -185,8 +184,6 @@ module top(
         .volume(volume),
         .octave(octave),
         .loop_width(loop_width),
-        .ibeat(ibeatNum),
-        .bound(bound_debug),
         .DIGIT(DIGIT),
         .DISPLAY(DISPLAY)
     );

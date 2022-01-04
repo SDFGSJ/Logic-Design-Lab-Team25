@@ -5,14 +5,12 @@ module player_control (
 	input loop_de,
 	input [2:0] loop_width,
 	input reverse,
-	output reg [11:0] ibeat,
-	output [11:0] bound_debug
+	output reg [11:0] ibeat
 );
 	parameter LEN = 4095;
     reg [11:0] next_ibeat;
 	reg [11:0] bound, bound_next;
 
-	assign bound_debug = bound;	//debug purpose only
 
 	always @(posedge clk, posedge rst) begin
 		if (rst) begin

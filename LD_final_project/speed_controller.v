@@ -7,9 +7,9 @@ module speed_controller(
     output reg play_clk
 );
     wire clkDiv21, clkDiv22, clkDiv23;
-    clock_divider #(.n(23)) clock_21(.clk(clk), .clk_div(clkDiv21));    // for player[fast]
-    clock_divider #(.n(24)) clock_22(.clk(clk), .clk_div(clkDiv22));    // for player[normal]
-    clock_divider #(.n(25)) clock_23(.clk(clk), .clk_div(clkDiv23));    // for player[slow]
+    clock_divider #(.n(21)) clock_21(.clk(clk), .clk_div(clkDiv21));    // for player[fast]
+    clock_divider #(.n(22)) clock_22(.clk(clk), .clk_div(clkDiv22));    // for player[normal]
+    clock_divider #(.n(23)) clock_23(.clk(clk), .clk_div(clkDiv23));    // for player[slow]
 
     wire speedup_debounced, speeddown_debounced;
     wire speedup_1p, speeddown_1p;
