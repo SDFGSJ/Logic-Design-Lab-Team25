@@ -21,7 +21,7 @@
 `define hb 32'd988
 `define up_d 32'd311
 
-`define sil   32'd50000000 // slience
+`define sil   32'd1_0000_0000 // slience
 
 
 module music_example (
