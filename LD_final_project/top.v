@@ -188,6 +188,12 @@ module top(
         .DISPLAY(DISPLAY)
     );
 
+    wire is_noise;
+    noise_decider noiseDeciderInst(
+        .ibeatNum(ibeatNum),
+        .is_noise(is_noise)
+    );
+
 
     // Note generation
     // [in]  processed frequency
@@ -197,7 +203,8 @@ module top(
         .rst(rst), 
         .volume(volume),
         .note_div_left(freq_outL), 
-        .note_div_right(freq_outR), 
+        .note_div_right(freq_outR),
+        .is_noise(is_noise), 
         .audio_left(audio_in_left),     // left sound audio
         .audio_right(audio_in_right)    // right sound audio
     );
