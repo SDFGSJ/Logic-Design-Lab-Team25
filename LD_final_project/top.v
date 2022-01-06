@@ -2,8 +2,6 @@ module top(
     input clk,
     input rst,      // BTNC
     input play,     // BTNU: play/pause
-    input speedup,  // BTNR
-    input speeddown,// BTNL
     input loop, //temp loop effect
     inout PS2_DATA,
     inout PS2_CLK,
@@ -89,13 +87,14 @@ module top(
 
 
     //debounce, onepulse inside this module
-    //[in] clk, rst, speedup, speeddown
+    //[in] clk, rst, key_down, last_change, key_valid
     //[out] play_clk
     speed_controller speedCtrl(
         .clk(clk),
         .rst(rst),
-        .speedup(speedup),
-        .speeddown(speeddown),
+        .key_down(key_down),
+        .last_change(last_change),
+        .key_valid(key_valid),
         .play_clk(play_clk)
     );
     
