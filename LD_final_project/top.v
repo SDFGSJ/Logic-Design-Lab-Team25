@@ -1,3 +1,4 @@
+`define silence 32'd1_0000_0000
 module top(
     input clk,
     input rst,      // BTNC
@@ -154,25 +155,32 @@ module top(
 
     // freq_outL, freq_outR
     // Note gen makes no sound, if freq_out = 50000000 / `silence = 1
+    /*
+    suppose sw[15]=0 && 0<=ibeat<4 is_noise=1
+    music_example's toneR output `sil, assign it to freqR, and parse it to freq_outR
+    but when octave == 1 or 3, freq_out_R = 10^8/... != 1.
+    So when freq_out_R(!=1) is passed to note_gen, the noise wouldn't be muted.
+    check whether freqR == `sil?
+    */
     always @(*) begin
-        freq_outL = 1_0000_0000 / freqL;
+        freq_outL = 1_0000_0000 / (freqL == 1_0000_0000 ? `silence : freqL);
         if(octave==1) begin
-            freq_outL = 1_0000_0000 / (freqL/2);
+            freq_outL = 1_0000_0000 / (freqL == 1_0000_0000 ? `silence : (freqL/2));
         end else if(octave==2) begin
-            freq_outL = 1_0000_0000 / freqL;
+            freq_outL = 1_0000_0000 / (freqL == 1_0000_0000 ? `silence : freqL);
         end else if(octave==3) begin
-            freq_outL = 1_0000_0000 / (freqL*2);
+            freq_outL = 1_0000_0000 / (freqL == 1_0000_0000 ? `silence : (freqL*2));
         end
     end
 
     always @(*) begin
-        freq_outR = 1_0000_0000 / freqR;
+        freq_outR = 1_0000_0000 / (freqR == 1_0000_0000 ? `silence : freqR);
         if(octave==1) begin
-            freq_outR = 1_0000_0000 / (freqR/2);
+            freq_outR = 1_0000_0000 / (freqR == 1_0000_0000 ? `silence : (freqR/2));
         end else if(octave==2) begin
-            freq_outR = 1_0000_0000 / freqR;
+            freq_outR = 1_0000_0000 / (freqR == 1_0000_0000 ? `silence : freqR);
         end else if(octave==3) begin
-            freq_outR = 1_0000_0000 / (freqR*2);
+            freq_outR = 1_0000_0000 / (freqR == 1_0000_0000 ? `silence : (freqR*2));
         end
     end
 
