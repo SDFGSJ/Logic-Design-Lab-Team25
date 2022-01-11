@@ -5,7 +5,8 @@ module speed_controller(
     input [511:0] key_down,
     input [8:0] last_change,
     input key_valid,
-    output reg play_clk
+    output reg play_clk,
+    output reg [1:0] speed
 );
     parameter [8:0] KEY_CODES[0:1] = {
         9'b0_0001_1010,	//Z => 1A
@@ -26,7 +27,7 @@ module speed_controller(
     clock_divider #(.n(21)) clock_21(.clk(clk), .clk_div(clkDiv21));    // for player[fast]
     clock_divider #(.n(22)) clock_22(.clk(clk), .clk_div(clkDiv22));    // for player[normal]
 
-    reg [1:0] speed, speed_next;    //speed: 1~2, default = 1
+    reg [1:0] speed_next;    //speed: 1~2, default = 1
     always @(posedge clk, posedge rst) begin
         if(rst) begin
             speed <= 1;

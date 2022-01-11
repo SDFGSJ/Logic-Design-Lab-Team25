@@ -90,13 +90,15 @@ module top(
     //debounce, onepulse inside this module
     //[in] clk, rst, key_down, last_change, key_valid
     //[out] play_clk
+    wire [1:0] speed; // for note_gen
     speed_controller speedCtrl(
         .clk(clk),
         .rst(rst),
         .key_down(key_down),
         .last_change(last_change),
         .key_valid(key_valid),
-        .play_clk(play_clk)
+        .play_clk(play_clk),
+        .speed(speed)
     );
     
     //[in] clk, rst, key_down, last_change, key_valid
@@ -201,6 +203,12 @@ module top(
         .is_noise(is_noise)
     );
 
+    wire is_AM;
+    AM_decider AMDeciderInst(
+        .ibeatNum(ibeatNum),
+        .is_AM(is_AM)
+    );
+
 
     // Note generation
     // [in]  processed frequency
@@ -211,7 +219,9 @@ module top(
         .volume(volume),
         .note_div_left(freq_outL), 
         .note_div_right(freq_outR),
-        .is_noise(is_noise), 
+        .is_noise(is_noise),
+        .is_AM(is_AM),
+        .speed(speed),
         .audio_left(audio_in_left),     // left sound audio
         .audio_right(audio_in_right)    // right sound audio
     );

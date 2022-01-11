@@ -5,6 +5,8 @@ module note_gen(
     note_div_left, // div for note generation
     note_div_right,
     is_noise,
+    is_AM,
+    speed,
     audio_left,
     audio_right
 );
@@ -15,6 +17,8 @@ module note_gen(
     input [2:0] volume;
     input [21:0] note_div_left, note_div_right; // div for note generation
     input is_noise;
+    input is_AM;
+    input [1:0] speed;
     output reg [15:0] audio_left;
     output [15:0] audio_right;
 
@@ -61,12 +65,22 @@ module note_gen(
                 note_cnt <= 0;
         end
     end
-        
-        
+
+
+    wire [15:0] AM_audio; 
+    AM_gen AMGenInst(
+        .clk(note_clk),
+        .rst(rst),
+        .speed(speed),
+        .volume(volume),
+        .AM_audio(AM_audio)
+    );
 
     always @(*) begin
         if(note_div_left == 22'd1) begin
             audio_left = 16'h0000;
+        end else if (is_AM) begin
+            audio_left = AM_audio;
         end else if (is_noise) begin
             audio_left = (noise_clk == 1'b0) ? {1'b1, random3[2:0], random2, random1, random0}
                                         : {1'b0, random3[2:0], random2, random1, random0};
