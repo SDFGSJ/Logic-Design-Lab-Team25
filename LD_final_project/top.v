@@ -141,6 +141,7 @@ module top(
         .ibeatNum(ibeatNum),
         .en(play_pause),
         .switch(sw),
+        .left_button_de(left_button_debounced),
         .toneL(freqL),
         .toneR(freqR),
         .led(led)
