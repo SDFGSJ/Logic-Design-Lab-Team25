@@ -3,6 +3,8 @@ module top(
     input clk,
     input rst,      // BTNC
     input play,     // BTNU: play/pause
+    input right_button,
+    input left_button,
     input loop, //temp loop effect
     inout PS2_DATA,
     inout PS2_CLK,
@@ -28,10 +30,13 @@ module top(
 
     wire [2:0] volume, octave;
     wire play_pause;
-    wire play_debounced, loop_debounced;    //loop only have debounced
+    wire play_debounced, loop_debounced, right_button_debounced, left_button_debounced;    //loop only have debounced
     wire play_1p;
     debounce play_or_pause_de(.clk(clk), .pb(play), .pb_debounced(play_debounced));
     debounce loop_de(.clk(clk), .pb(loop), .pb_debounced(loop_debounced));
+    debounce rb_de(.clk(clk), .pb(right_button), .pb_debounced(right_button_debounced));
+    debounce lb_de(.clk(clk), .pb(left_button), .pb_debounced(left_button_debounced));
+
     onepulse play_or_pause_op(.clk(clk), .signal(play_debounced), .op(play_1p));
     
 
@@ -200,6 +205,8 @@ module top(
     wire is_noise;
     noise_decider noiseDeciderInst(
         .ibeatNum(ibeatNum),
+        .right_button_de(right_button_debounced),
+        .left_button_de(left_button_debounced),
         .is_noise(is_noise)
     );
 

@@ -1,43 +1,48 @@
 module noise_decider (
     input [11:0] ibeatNum,
+    input right_button_de,
+    input left_button_de,
     output reg is_noise
 );
 
 always @(*) begin
-    if (ibeatNum < 4)
+    is_noise = 0;
+    if (ibeatNum < 4) begin
         is_noise = 0;
-    else if (ibeatNum < 8)
+    end else if (ibeatNum < 8) begin
         is_noise = 0;
-    else if (ibeatNum < 12)
+    end else if (ibeatNum < 12) begin
         is_noise = 0;
-    else if (ibeatNum < 16)
+    end else if (ibeatNum < 16) begin
         is_noise = 0;
-    else if (ibeatNum < 20)
+    end else if (ibeatNum < 20) begin
         is_noise = 1;
-    else if (ibeatNum < 24)
+    end else if (ibeatNum < 24) begin
         is_noise = 0;
-    else if (ibeatNum < 28)
+    end else if (ibeatNum < 28) begin
         is_noise = 0;
-    else if (ibeatNum < 32)
+    end else if (ibeatNum < 32) begin
         is_noise = 0;
-    else if (ibeatNum < 36)
+    end else if (ibeatNum < 36) begin
         is_noise = 0;
-    else if (ibeatNum < 40)
+    end else if (ibeatNum < 40) begin
         is_noise = 0;
-    else if (ibeatNum < 44)
+    end else if (ibeatNum < 44) begin
         is_noise = 0;
-    else if (ibeatNum < 48)
+    end else if (ibeatNum < 48) begin
         is_noise = 0;
-    else if (ibeatNum < 52)
+    end else if (ibeatNum < 52) begin
         is_noise = 1;
-    else if (ibeatNum < 56)
+    end else if (ibeatNum < 56) begin
         is_noise = 0;
-    else if (ibeatNum < 60)
+    end else if (ibeatNum < 60) begin
         is_noise = 0;
-    else if (ibeatNum < 64)
+        if(right_button_de) begin
+            is_noise = 1;
+        end
+    end else if (ibeatNum < 64) begin
         is_noise = 0;
-    else
-        is_noise = 0;
+    end
 end
     
 endmodule
