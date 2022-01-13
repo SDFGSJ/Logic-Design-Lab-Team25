@@ -9,7 +9,7 @@ module AM_gen (
 
 reg [15:0] next_AM_audio, AM_audio_abs;
 reg [31:0] cnt, global_cnt;
-wire [31:0] cnt_max = ((note_div_left >> 1) >> 9) >> 1;
+wire [31:0] cnt_max = ((note_div_left >> 1) >> 9) >> 1; //original=9
 
 reg up;
 reg [31:0] vol_step;

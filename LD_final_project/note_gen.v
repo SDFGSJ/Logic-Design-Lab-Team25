@@ -1,26 +1,59 @@
 module note_gen(
-    clk, // clock from crystal
-    rst, // active high reset
-    volume, 
-    note_div_left, // div for note generation
-    note_div_right,
-    is_noise,
-    is_AM,
-    speed,
-    audio_left,
-    audio_right
+    input clk, // clock from crystal
+    input rst, // active high reset
+    input [2:0] volume, 
+    input [21:0] note_div_left, // div for note generation
+    input [21:0] note_div_right,
+    input is_noise,
+    input is_AM,
+    input [1:0] speed,
+    input [511:0] key_down,
+    input [8:0] last_change,
+    input key_valid,
+    output reg [15:0] audio_left,
+    output [15:0] audio_right
 );
+    //OP[:square wave duty cycle
+    parameter [8:0] KEY_CODES[0:2] = {
+        9'b0_0100_0100,	//O => 44
+		9'b0_0100_1101,	//P => 4D
+		9'b0_0101_0100	//[ => 54
+    };
 
-    // I/O declaration
-    input clk; // clock from crystal
-    input rst; // active low reset
-    input [2:0] volume;
-    input [21:0] note_div_left, note_div_right; // div for note generation
-    input is_noise;
-    input is_AM;
-    input [1:0] speed;
-    output reg [15:0] audio_left;
-    output [15:0] audio_right;
+    reg [2:0] key_num;
+	always @ (*) begin
+        case(last_change)
+            KEY_CODES[0] : key_num = 3'b000;   //O
+            KEY_CODES[1] : key_num = 3'b001;   //P
+            KEY_CODES[2] : key_num = 3'b010;   //[
+            default : key_num = 3'b111;
+        endcase
+    end
+
+    reg [9:0] square_duty_cycle;
+    reg [9:0] square_duty_cycle_next;
+    always @(posedge clk, posedge rst) begin
+        if(rst) begin
+            square_duty_cycle <= 125;
+        end else begin
+            square_duty_cycle <= square_duty_cycle_next;
+        end
+    end
+
+    always @(*) begin
+        square_duty_cycle_next = square_duty_cycle;
+        if(key_valid && key_down[last_change]) begin
+            if(key_num != 3'b111) begin
+                if (key_num == 3'b000) begin	//O
+					square_duty_cycle_next = 125;
+				end else if (key_num == 3'b001) begin	//P
+					square_duty_cycle_next = 250;
+				end else if (key_num == 3'b010) begin	//[
+					square_duty_cycle_next = 500;
+				end
+			end
+		end
+    end
 
 
     wire [3:0] random3, random2, random1, random0;
@@ -34,7 +67,7 @@ module note_gen(
     reg note_clk, noise_clk;
 
     wire [31:0] noise_cnt_max = 1_0000_0000 / (random0 << 4);
-    wire [31:0] noise_cnt_duty = noise_cnt_max * 500/1000; // original 125
+    wire [31:0] noise_cnt_duty = noise_cnt_max * 70/1000; //60,70,100 nice
     always @(posedge clk, posedge rst) begin
         noise_cnt <= noise_cnt + 1;
         if (rst)
@@ -50,7 +83,7 @@ module note_gen(
         end
     end
 
-    wire [31:0] note_cnt_duty = note_div_left * 250/1000; //original 250
+    wire [31:0] note_cnt_duty = note_div_left * square_duty_cycle/1000;
     always @(posedge clk, posedge rst) begin
         note_cnt <= note_cnt + 1;
         if (rst)

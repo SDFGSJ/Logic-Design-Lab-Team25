@@ -222,6 +222,9 @@ module top(
         .is_noise(is_noise),
         .is_AM(is_AM),
         .speed(speed),
+        .key_down(key_down),
+        .last_change(last_change),
+        .key_valid(key_valid),
         .audio_left(audio_in_left),     // left sound audio
         .audio_right(audio_in_right)    // right sound audio
     );
