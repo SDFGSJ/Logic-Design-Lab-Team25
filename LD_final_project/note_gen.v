@@ -34,7 +34,7 @@ module note_gen(
     reg note_clk, noise_clk;
 
     wire [31:0] noise_cnt_max = 1_0000_0000 / (random0 << 4);
-    wire [31:0] noise_cnt_duty = noise_cnt_max * 250/1000; // original 125
+    wire [31:0] noise_cnt_duty = noise_cnt_max * 500/1000; // original 125
     always @(posedge clk, posedge rst) begin
         noise_cnt <= noise_cnt + 1;
         if (rst)
@@ -82,8 +82,9 @@ module note_gen(
         end else if (is_AM) begin
             audio_left = AM_audio;
         end else if (is_noise) begin
-            audio_left = (noise_clk == 1'b0) ? {3'b101, random3[0], random2, random1, random0}
-                                        : {3'b011, random3[0], random2, random1, random0};
+            /*audio_left = (noise_clk == 1'b0) ? {3'b101, random3[0], random2, random1, random0}
+                                        : {3'b011, random3[0], random2, random1, random0};*/
+            audio_left = (noise_clk == 1'b0) ? 16'hA000 : 16'h6000;
         end else begin
             if(volume==1) begin
                 audio_left = (note_clk == 1'b0) ? 16'hF000 : 16'h1000;

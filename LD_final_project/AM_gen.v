@@ -67,11 +67,12 @@ always @(*) begin
 
 end
 
+//5FFF< sound good
 always @(*) begin
     case (volume)
-    3'd1: vol_step = 16'h1FFF / cnt_max;
-    3'd2: vol_step = 16'h2FFF / cnt_max;
-    3'd3: vol_step = 16'h7FFF / cnt_max;
+    3'd1: vol_step = 16'h3FFF / cnt_max;
+    3'd2: vol_step = 16'h4FFF / cnt_max;
+    3'd3: vol_step = 16'h5FFF / cnt_max;
     3'd4: vol_step = 16'h6FFF / cnt_max;
     3'd5: vol_step = 16'h7FFF / cnt_max;
     default: vol_step = 87;
