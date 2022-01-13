@@ -104,7 +104,7 @@ module music_example (
                 led_next = 1<<5;
             end else if(44<=ibeatNum && ibeatNum<48) begin
                 if(switch[4]) begin
-                    toneR = `la;
+                    toneR = `lc;
                 end
                 led_next = 1<<4;
             end else if(48<=ibeatNum && ibeatNum<52) begin
@@ -114,7 +114,7 @@ module music_example (
                 led_next = 1<<3;
             end else if(52<=ibeatNum && ibeatNum<56) begin
                 if(switch[2]) begin
-                    toneR = `le;
+                    toneR = `lc;
                 end
                 led_next = 1<<2;
             end else if(56<=ibeatNum && ibeatNum<60) begin

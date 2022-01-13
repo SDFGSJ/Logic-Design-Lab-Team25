@@ -50,7 +50,7 @@ module note_gen(
         end
     end
 
-    wire [31:0] note_cnt_duty = note_div_left * 250/1000;
+    wire [31:0] note_cnt_duty = note_div_left * 125/1000;
     always @(posedge clk, posedge rst) begin
         note_cnt <= note_cnt + 1;
         if (rst)
@@ -66,13 +66,13 @@ module note_gen(
         end
     end
 
-
     wire [15:0] AM_audio; 
     AM_gen AMGenInst(
-        .clk(note_clk),
+        .clk(clk),
         .rst(rst),
         .speed(speed),
         .volume(volume),
+        .note_div_left(note_div_left),
         .AM_audio(AM_audio)
     );
 
