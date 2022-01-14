@@ -67,7 +67,7 @@ module note_gen(
     reg note_clk, noise_clk;
 
     wire [31:0] noise_cnt_max = 1_0000_0000 / (random0 << 4);
-    wire [31:0] noise_cnt_duty = noise_cnt_max * 70/1000; //60,70,100 nice
+    wire [31:0] noise_cnt_duty = noise_cnt_max * 125/1000; //60,70,100,125 nice
     always @(posedge clk, posedge rst) begin
         noise_cnt <= noise_cnt + 1;
         if (rst)
